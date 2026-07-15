@@ -164,6 +164,15 @@ services:
       - namenode
       - datanode
 
+  notebook:
+    build: ./notebook
+    container_name: notebook
+    ports:
+      - "8888:8888"
+    depends_on:
+      - minio
+      - namenode
+
 volumes:
   minio_data:
   hadoop_namenode:
