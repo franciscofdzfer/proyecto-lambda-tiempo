@@ -49,6 +49,7 @@ def main():
 
     spark = SparkSession.builder \
         .appName("SpeedLayerLecturasTiempo") \
+	.master("spark://spark-master:7077") \
         .config("spark.jars.packages",
                 "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.8,org.apache.hadoop:hadoop-aws:3.3.4") \
         .config("spark.hadoop.fs.s3a.endpoint", MINIO_ENDPOINT) \
