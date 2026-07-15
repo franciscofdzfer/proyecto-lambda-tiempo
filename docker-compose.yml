@@ -46,5 +46,13 @@ services:
       - kafka
     restart: on-failure
 
+  spark-streaming:
+    build: ./spark-streaming
+    container_name: spark-streaming
+    depends_on:
+      - kafka
+      - minio
+    restart: on-failure
+
 volumes:
   minio_data:
