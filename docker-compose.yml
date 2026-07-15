@@ -39,5 +39,12 @@ services:
     volumes:
       - minio_data:/data
 
+  productor:
+    build: ./productor
+    container_name: productor
+    depends_on:
+      - kafka
+    restart: on-failure
+
 volumes:
   minio_data:
