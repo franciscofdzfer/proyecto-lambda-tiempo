@@ -83,5 +83,31 @@ services:
       - spark-master
     restart: on-failure
 
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
+    container_name: namenode
+    ports:
+      - "9870:50070"
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=lambda-tiempo
+    env_file:
+      - ./hadoop-hive.env
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
+    container_name: datanode
+    depends_on:
+      - namenode
+    volumes:
+      - hadoop_datanode:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    env_file:
+      - ./hadoop-hive.env
+
 volumes:
   minio_data:
+  hadoop_namenode:
+  hadoop_datanode:
