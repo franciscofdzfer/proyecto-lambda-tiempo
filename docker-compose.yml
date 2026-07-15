@@ -46,12 +46,41 @@ services:
       - kafka
     restart: on-failure
 
+  spark-master:
+    build: ./spark-cluster
+    container_name: spark-master
+    ports:
+      - "8082:8080"
+      - "7077:7077"
+    command: >
+      /bin/sh -c "export SPARK_HOME=$$(python -c 'import pyspark, os; print(os.path.dirname(pyspark.__file__))') &&
+      $$SPARK_HOME/bin/spark-class org.apache.spark.deploy.master.Master"
+
+  spark-worker-1:
+    build: ./spark-cluster
+    container_name: spark-worker-1
+    depends_on:
+      - spark-master
+    command: >
+      /bin/sh -c "export SPARK_HOME=$$(python -c 'import pyspark, os; print(os.path.dirname(pyspark.__file__))') &&
+      $$SPARK_HOME/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
+
+  spark-worker-2:
+    build: ./spark-cluster
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    command: >
+      /bin/sh -c "export SPARK_HOME=$$(python -c 'import pyspark, os; print(os.path.dirname(pyspark.__file__))') &&
+      $$SPARK_HOME/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077"
+
   spark-streaming:
     build: ./spark-streaming
     container_name: spark-streaming
     depends_on:
       - kafka
       - minio
+      - spark-master
     restart: on-failure
 
 volumes:
